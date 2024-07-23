@@ -35,7 +35,8 @@ Team. 아무코토모로게땅
 
 ## ER Diagram
 
-이미지 삽입 예정
+![ERD](images/erd.png)
+
 
 ## 스토리보드
 
@@ -73,7 +74,8 @@ Team. 아무코토모로게땅
 
 ### 언어
 
-badge로 삽입할 예정
+<img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white"/>
+
 
 ### 라이브러리
 
@@ -81,4 +83,5 @@ badge로 삽입할 예정
 
 ### 데이터베이스
 
-badge로 삽입할 예정
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=flat-square&logo=MySQL&logoColor=white"/>
+
