@@ -1,15 +1,13 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import ElementClickInterceptedException
-import json
 import csv
+import os
 
 driver = webdriver.Chrome()
-# url = "https://www.genesis.com/kr/ko/support/faq.html?anchorID=faq_tab"
-url = "https://www.kia.com/kr/customer-service/center/faq"
+url = "https://www.genesis.com/kr/ko/support/faq.html?anchorID=faq_tab"
 driver.get(url)
 driver.implicitly_wait(5)
-
 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
 faq_data = []
@@ -23,7 +21,7 @@ for num, element in enumerate(question_elements):
         answer_button.click()
     except ElementClickInterceptedException:
         driver.execute_script("arguments[0].scrollIntoView(true);", element)
-        driver.implicitly_wait(20)
+        driver.implicitly_wait(30)
         answer_button.click()
     
     category = element.find_element(By.CLASS_NAME, "accordion-label")
@@ -31,12 +29,15 @@ for num, element in enumerate(question_elements):
     answer = element.find_element(By.CLASS_NAME, "accordion-panel-inner")
     
     faq_data.append({"category": category.text, "question": question.text, "answer": answer.text})
-    print(f"현재 {total_num} 중 {num+1}번째 데이터 수집 완료")
+    print(f"현재 데이터 {num+1}/{total_num} 수집 완료")
 
 driver.quit()
 
+# 현재 실행 파일의 디렉토리 경로 가져오기
+current_directory = os.path.dirname(os.path.abspath(__file__))
+
 # CSV 파일로 저장
-csv_file = "faq_data.csv"
+csv_file = os.path.join(current_directory, "genesis_faq_data.csv")
 csv_columns = ["category", "question", "answer"]
 
 try:
@@ -48,6 +49,3 @@ try:
     print(f"Data successfully saved to {csv_file}")
 except IOError as e:
     print(f"Error saving to file: {e}")
-
-# 결과 출력
-print(json.dumps(faq_data, ensure_ascii=False, indent=4))
