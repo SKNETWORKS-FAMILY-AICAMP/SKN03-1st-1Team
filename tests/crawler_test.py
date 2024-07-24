@@ -18,14 +18,19 @@ driver.implicitly_wait(3)
 # driver.maximize_window()
 # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-qa_elements = driver.find_elements(By.CLASS_NAME, "cp-faq__accordion-item")
-for element in qa_elements:
+faq_data = []
+question_elements = driver.find_elements(By.CLASS_NAME, "cp-faq__accordion-item")
+# answer_elements = driver.find_elements(By.CLASS_NAME, "accordion-panel-inner")
+
+# answer_lst = []
+# for element in answer_elements:
+#     answer_lst.append(element.text)
+#     print(element.text)
+
+for element in question_elements:
     category = element.find_element(By.CLASS_NAME, "accordion-label")
     question = element.find_element(By.CLASS_NAME, "accordion-title")
-    # answer = element.find_element(By.CLASS_NAME, "accordion-panel-inner")
-    print(category.text)
-    print(question.text)
-    # print(answer.text)
+    faq_data.append({"category": category.text, "question": question.text})
 
 driver.quit()
 
