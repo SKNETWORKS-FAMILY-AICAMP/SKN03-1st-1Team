@@ -10,9 +10,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException, NoSuchElementException, JavascriptException, ElementNotInteractableException, StaleElementReferenceException
 from webdriver_manager.chrome import ChromeDriverManager
 
-
 class CarDataExtractor:
-    def __init__(self, data_directory="extracted_data"):
+    def __init__(self, data_directory="tests/extracted_data"):
         self.data_directory = data_directory
         self.driver = self.initialize_chrome_driver()
         if not os.path.exists(self.data_directory):
@@ -229,7 +228,6 @@ class CarDataExtractor:
                 print(f"chart_data element innerText: {element_state}")
             except Exception as inner_e:
                 print(f"Error accessing chart_data element: {inner_e}")
-
 
     def extract_data(self, filters):
         try:
