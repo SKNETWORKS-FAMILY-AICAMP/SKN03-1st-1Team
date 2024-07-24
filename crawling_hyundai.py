@@ -19,6 +19,7 @@ driver.implicitly_wait(3)
 # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
 elements = driver.find_elements(By.CLASS_NAME, value="tab-menu__icon")
+print(elements)
 
 faq_data = {}
 
@@ -37,18 +38,18 @@ for elem in elements:
         WebDriverWait(driver, 30).until(
             EC.presence_of_element_located((By.CLASS_NAME, 'faq-list'))
         )
-
+        
         # 해당 카테고리의 모든 질문-답변 가져오기
         questions = driver.find_elements(By.CLASS_NAME, 'list-content')
         answers = driver.find_elements(By.CLASS_NAME, 'conts')
 
-        qa_pairs = []
-        for q, a in zip(questions, answers):
-            question_text = q.text.strip()
-            answer_text = a.text.strip()
-            qa_pairs.append({'question': question_text, 'answer': answer_text})
+        # qa_pairs = []
+        # for q, a in zip(questions, answers):
+        #     question_text = q.text.strip()
+        #     answer_text = a.text.strip()
+        #     qa_pairs.append({'question': question_text, 'answer': answer_text})
         
-        faq_data[category] = qa_pairs
+        # faq_data[category] = qa_pairs
 
         if category == "기타":
             break
