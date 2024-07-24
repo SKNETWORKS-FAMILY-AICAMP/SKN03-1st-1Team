@@ -10,7 +10,6 @@ url = "https://www.kia.com/kr/customer-service/center/faq"
 driver.get(url)
 driver.implicitly_wait(5)
 driver.execute_script("window.scrollBy(0, 500);")
-driver.implicitly_wait(5)
 
 faq_data = []
 for category_num in range(1, 8):

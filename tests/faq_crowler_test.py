@@ -11,10 +11,10 @@ driver.implicitly_wait(5)
 driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
 faq_data = []
-question_elements = driver.find_elements(By.CLASS_NAME, "cp-faq__accordion-item")
-total_num = len(question_elements)
+qa_elements = driver.find_elements(By.CLASS_NAME, "cp-faq__accordion-item")
+total_num = len(qa_elements)
 
-for num, element in enumerate(question_elements):
+for idx, element in enumerate(qa_elements):
     answer_button = element.find_element(By.CLASS_NAME, "accordion-btn")
 
     try:
@@ -29,7 +29,7 @@ for num, element in enumerate(question_elements):
     answer = element.find_element(By.CLASS_NAME, "accordion-panel-inner")
     
     faq_data.append({"category": category.text, "question": question.text, "answer": answer.text})
-    print(f"현재 데이터 {num+1}/{total_num} 수집 완료")
+    print(f"현재 데이터 {idx+1}/{total_num} 수집 완료")
 
 driver.quit()
 
