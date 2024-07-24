@@ -5,9 +5,10 @@ import json
 import csv
 
 driver = webdriver.Chrome()
-url = "https://www.genesis.com/kr/ko/support/faq.html?anchorID=faq_tab"
+# url = "https://www.genesis.com/kr/ko/support/faq.html?anchorID=faq_tab"
+url = "https://www.kia.com/kr/customer-service/center/faq"
 driver.get(url)
-driver.implicitly_wait(3)
+driver.implicitly_wait(5)
 
 # 브라우저 창 최대화
 driver.maximize_window()
