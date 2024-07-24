@@ -70,6 +70,17 @@ Team. 아무코토모로게땅
 - **test** : Test 관련한 코드의 추가, 수정
 - **chore** : (코드의 수정 없이) 설정 변경
 
+## Git Branch 전략
+
+github flow 전략 사용
+
+main branch를 제외한 모든 branch는 feature branch로 생성하여 작업 후 pull request를 통해 main branch에 merge
+
+1. 박중헌, 오승민, 송영빈, 문희선 각자 feature branch 생성
+2. 각자의 feature branch에서 작업
+3. 작업이 완료되면 main branch로 pull request 생성
+4. 코드 리뷰 후 main branch에 merge
+
 ## 기술 스택
 
 ### 언어
