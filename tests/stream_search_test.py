@@ -47,26 +47,7 @@ with st.form(key="my_form"):
 
     start_date, end_date = st.select_slider(
         "날짜 범위 설정",
-        options=[
-            "2023.01",
-            "2023.02",
-            "2023.03",
-            "2023.04",
-            "2023.05",
-            "2023.06",
-            "2023.07",
-            "2023.08",
-            "2023.09",
-            "2023.10",
-            "2023.11",
-            "2023.12",
-            "2024.01",
-            "2024.02",
-            "2024.03",
-            "2024.04",
-            "2024.05",
-            "2024.06",
-        ],
+        options = [f"{year}.{str(month).zfill(2)}" for year in range(2023, 2025) for month in range(1, 13) if not (year == 2024 and month > 6)],
         value=("2023.01", "2023.02"),
     )
     submit_button = (st.form_submit_button(label="검색"),)
