@@ -1,2 +1,4 @@
 .venv
 .streamlit
+docker-compose.yml
+dbtable.sql
