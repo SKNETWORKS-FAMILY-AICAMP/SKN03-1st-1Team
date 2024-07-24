@@ -1,11 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException, StaleElementReferenceException
-
+from selenium.common.exceptions import ElementClickInterceptedException
+import json
+import csv
 
 driver = webdriver.Chrome()
 url = "https://www.genesis.com/kr/ko/support/faq.html?anchorID=faq_tab"
@@ -39,6 +36,19 @@ for num, element in enumerate(question_elements):
 
 driver.quit()
 
+# CSV 파일로 저장
+csv_file = "faq_data.csv"
+csv_columns = ["category", "question", "answer"]
+
+try:
+    with open(csv_file, 'w', newline='', encoding='utf-8') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
+        writer.writeheader()
+        for data in faq_data:
+            writer.writerow(data)
+    print(f"Data successfully saved to {csv_file}")
+except IOError as e:
+    print(f"Error saving to file: {e}")
+
 # 결과 출력
-import json
 print(json.dumps(faq_data, ensure_ascii=False, indent=4))
