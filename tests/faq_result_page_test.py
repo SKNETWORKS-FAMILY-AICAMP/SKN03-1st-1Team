@@ -2,6 +2,8 @@ import streamlit as st
 
 
 def main():
+    conn = st.connection("mydb", type="sql", autocommit=True)
+
     st.markdown("**국내 차량 브랜드**")
     st.markdown("### 통합 FAQ 페이지")
 
@@ -20,18 +22,42 @@ def main():
             )
 
         with middle:
-            title = st.text_input(
+            search = st.text_input(
                 "", placeholder="질문을 검색하세요", label_visibility="collapsed"
             )
         with right:
             submit_button = st.form_submit_button(label="검색")
 
         if submit_button:
-            st.write(f"You selected: {brand_option}")
+            getting_question = f"""
+            SELECT answer
+            FROM faq
+            INNER JOIN brand
+            ON faq.brand_id = brand.brand_id
+            WHERE 1=1
+                  AND brand_name LIKE '%제네시스%'
+                  AND question LIKE '%법%'
+                  ;
+            """
+            question = conn.query(question, ttl=3600)
 
-    st.subheader(f"{brand_option} 답변")
-    container = st.container(border=True)
-    container.text(f"fdsfdsfsdfdsfsdfsd")
+            getting_answer = f"""
+            SELECT answer
+            FROM faq
+            INNER JOIN brand
+            ON faq.brand_id = brand.brand_id
+            WHERE 1=1
+                  AND brand_name LIKE '%제네시스%'
+                  AND question LIKE '%법%'
+                  ;
+            """
+            answer = conn.query(question, ttl=3600)
+
+    if brand_option is not None:
+        st.subheader(f"{brand_option} 답변")
+        container = st.container(border=True)
+        container.text(f"Q. {question}")
+        container.text(f"A. {answer}")
 
 
 if __name__ == "__main__":
