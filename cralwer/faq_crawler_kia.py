@@ -5,13 +5,16 @@ import os
 import csv
 import time
 
-driver = webdriver.Chrome()
-url = "https://www.kia.com/kr/customer-service/center/faq"
-driver.get(url)
-driver.implicitly_wait(5)
-driver.execute_script("window.scrollBy(0, 500);")
+def initialize_driver():
+    driver = webdriver.Chrome()
+    driver.implicitly_wait(5)
+    return driver
 
-def collect_faq_data(faq_data: list):
+def navigate_to_url(driver, url):
+    driver.get(url)
+    driver.execute_script("window.scrollBy(0, 500);")
+
+def collect_faq_data(driver, faq_data, category_text):
     question_elements = driver.find_elements(By.CLASS_NAME, "cmp-accordion__item")
     question_num = 0
 
@@ -27,52 +30,46 @@ def collect_faq_data(faq_data: list):
             question.click()
 
         answer = driver.find_element(By.XPATH, f"/html/body/div[2]/div/div/div[2]/div/div/div[3]/div/div/div[3]/div/div/div[{question_num}]/div/div/div")
-        faq_data.append({"category": category.text, "question": question.text, "answer": answer.text, "is_most": None, "brand_id": 1})
+        faq_data.append({"category": category_text, "question": question.text, "answer": answer.text, "is_most": None, "brand_id": 1})
 
-faq_data = []
-for category_num in range(1, 8):
-    # '전체' 카테고리는 건너뜀
-    if category_num == 2:
-        continue
-    else:
-        category = driver.find_element(By.XPATH, f"/html/body/div[2]/div/div/div[2]/div/div/div[3]/div/div/div[2]/div/div/div/div/ul/li[{category_num}]/button")
-        category.click()
-        time.sleep(5)
+def save_faq_data(faq_data, file_path):
+    keys = faq_data[0].keys()
+    with open(file_path, 'w', newline='', encoding='utf-8') as output_file:
+        dict_writer = csv.DictWriter(output_file, keys)
+        dict_writer.writeheader()
+        dict_writer.writerows(faq_data)
 
-    # 페이지 순환
-    while True:
-        collect_faq_data(faq_data)
-
-        # 다음 페이지가 있는지 확인
-        next_page = driver.find_elements(By.XPATH, "//ul[@class='paging-list']//li[@class='is-active']/following-sibling::li/a")
-        if next_page:
-            next_page[0].click()
-            time.sleep(5)  # 페이지 로딩 대기
+def main():
+    url = "https://www.kia.com/kr/customer-service/center/faq"
+    file_path = os.path.join(os.path.dirname(__file__), 'faq_data.csv')
+    faq_data = []
+    
+    driver = initialize_driver()
+    navigate_to_url(driver, url)
+    
+    for category_num in range(1, 8):
+        if category_num == 2:
+            continue
         else:
-            print(f"현재 {category.text} 카테고리 수집 완료")
-            break
+            category = driver.find_element(By.XPATH, f"/html/body/div[2]/div/div/div[2]/div/div/div[3]/div/div/div[2]/div/div/div/div/ul/li[{category_num}]/button")
+            category_text = category.text
+            category.click()
+            time.sleep(5)
+        
+        while True:
+            collect_faq_data(driver, faq_data, category_text)
+            
+            next_page = driver.find_elements(By.XPATH, "//ul[@class='paging-list']//li[@class='is-active']/following-sibling::li/a")
+            if next_page:
+                next_page[0].click()
+                time.sleep(5)
+            else:
+                print(f"Category '{category_text}' collection complete.")
+                break
+    
+    driver.quit()
+    save_faq_data(faq_data, file_path)
+    print(f"Data saved to {file_path}")
 
-# 브라우저 종료
-driver.quit()
-
-# 현재 실행 파일의 디렉토리 경로 가져오기
-current_directory = os.path.dirname(os.path.abspath(__file__))
-
-# CSV 파일로 저장
-csv_file = os.path.join(current_directory, "faq_data.csv")
-csv_columns = ["category", "question", "answer", "is_most", "brand_id"]
-
-# 새로 저장할  csv 파일 경로
-file_exists = os.path.isfile(csv_file)
-
-try:
-    with open(csv_file, 'a', newline='', encoding='utf-8') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
-        # 새로 저장할 csv 파일 경로 존재하지 않으면, 생성
-        if not file_exists:
-            writer.writeheader()
-        for data in faq_data:
-            writer.writerow(data)
-    print(f"Data successfully saved to {csv_file}")
-except IOError as e:
-    print(f"Error saving to file: {e}")
+if __name__ == "__main__":
+    main()
