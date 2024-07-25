@@ -28,7 +28,7 @@ for idx, element in enumerate(qa_elements):
     question = element.find_element(By.CLASS_NAME, "accordion-title")
     answer = element.find_element(By.CLASS_NAME, "accordion-panel-inner")
 
-    faq_data.append({"category": category.text, "question": question.text, "answer": answer.text, "is_most": None, "brand_id": 1})
+    faq_data.append({"category": category.text, "question": question.text, "answer": answer.text, "is_most": None, "brand_id": 2})
     print(f"현재 데이터 {idx+1}/{total_num} 수집 완료")
 
 driver.quit()
