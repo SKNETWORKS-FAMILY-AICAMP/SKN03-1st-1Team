@@ -1,26 +1,39 @@
-# 전국 자동차 등록 현황 및 기업 FAQ 조회 시스템
+# 🚗전국 자동차 등록 현황 및 기업 FAQ 조회 시스템
 
-## 프로젝트 소개
+## Ⅰ. 프로젝트 소개
 
-이 프로젝트는 전국 자동차 등록 현황 데이터를 분석하고 이를 기반으로 FAQ 조회 시스템을 구축하여 사용자에게 유용한 정보를 제공하는 것을 목표로 합니다.
+> 개발기간: 2024.07.24 ~ 2024.07.25   
+   
+이 프로젝트는 **전국 자동차 등록 현황을 분석**하고 이를 기반으로 **FAQ 조회 시스템을 구축**하여 사용자에게 유용한 정보를 제공하는 것을 목표로 합니다.
 
-## 팀원 소개
-
-Team. 아무코토모로게땅 
+## 👥 팀원 소개
+SK Networks AI CAMP 3기   
+**Team. 아무코토모로게땅**
 | 박중헌 (PM) | 오승민 | 송영빈 | 문희선 |
 |:----------:|:----------:|:----------:|:----------:|
-|역할|역할|역할|역할|
+|DB 설계<br>Streamlit 화면 구성|자동차 등록 현황 crawling|Streamlit 화면 구성|FAQ crawling|
 | [@qjrm1430](https://github.com/qjrm1430) | [@artemIntellectus](https://github.com/artemIntellectus) | [@GETSPRING8230](https://github.com/GETSPRING8230) | [@MoonHeesun](https://github.com/MoonHeesun) |
 
-## 프로젝트 요구사항
+## Ⅱ. 프로젝트 요구사항
 
-### 전국 자동차 등록 현황 **조회**
+### 1. 전국 자동차 등록 현황 **조회🚗**
 
-- **자동차 등록 현황 조회:** 사용자가 특정 지역, 연도 또는 차량 종류에 따라 자동차 등록 현황 데이터를 검색하고 조회할 수 있는 기능.
-- **브랜드별 분류:** 예: 현대, 기아, 제네시스, KG 모빌리티, 르노
-- **모델별 분류:** 예: 기아의 경우 - 쏘렌토, 카니발, k8
+- **자동차 등록 현황 조회**
+  - 사용자가 특정 지역, 연도 또는 차량 종류에 따라 자동차 등록 현황 데이터를 검색하고 조회할 수 있는 기능.
+    
+- **브랜드별 분류**
+  - 예) 현대, 기아, 제네시스, KG 모빌리티, 르노
+    
+- **모델별 분류**
+  - 예) 기아의 경우 - 쏘렌토, 카니발, k8
+  - - -
+### 2. 기업별 FAQ 조회💭
 
-### 기업 FAQ 조회
+- **기업별 FAQ 조회**
+  - 사용자가 자동차 관련 질문에 대해 검색하고 기업별 답변을 조회할 수 있는 기능.
+    
+- **브랜드별 분류**
+  - 기아, 제네시스
 
 ## 추가 기능
 
@@ -34,12 +47,12 @@ Team. 아무코토모로게땅
 - 
 - 
 
-## ER Diagram
+## Ⅲ. ER Diagram
 
 ![ERD](images/erd.png)
 
 
-## 스토리보드
+## Ⅳ. 스토리보드
 
 - 차량 검색 화면
 ![스토리보드](images/data_search_page_ui.png)
@@ -54,7 +67,7 @@ Team. 아무코토모로게땅
 
 이미지 삽입 예정
 
-## 컨벤션 규칙
+## Ⅴ. 컨벤션 규칙
 
 ### 포매터
 
@@ -62,8 +75,8 @@ Team. 아무코토모로게땅
 
 ### 네이밍 컨벤션
 
-- 폴더이름, 클래스 : 카멜 케이스
-- 파일이름, 함수이름, 변수이름 : 스네이크 케이스
+- 폴더이름, 클래스 : Camel Case
+- 파일이름, 함수이름, 변수이름 : Snake Case
 
 ### git commit 컨벤션
 
@@ -97,7 +110,8 @@ main branch를 제외한 모든 branch는 feature branch로 생성하여 작업 
 
 ### 라이브러리
 
-badge로 삽입할 예정
+<img src="https://img.shields.io/badge/Selenium-43B02A?style=flat-square&logo=Selenium&logoColor=white"/> <img src="https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=Streamlit&logoColor=white"/>
+
 
 ### 데이터베이스
 
