@@ -27,8 +27,8 @@ for idx, element in enumerate(qa_elements):
     category = element.find_element(By.CLASS_NAME, "accordion-label")
     question = element.find_element(By.CLASS_NAME, "accordion-title")
     answer = element.find_element(By.CLASS_NAME, "accordion-panel-inner")
-    
-    faq_data.append({"category": category.text, "question": question.text, "answer": answer.text})
+
+    faq_data.append({"category": category.text, "question": question.text, "answer": answer.text, "is_most": None, "brand_id": 1})
     print(f"현재 데이터 {idx+1}/{total_num} 수집 완료")
 
 driver.quit()
@@ -37,13 +37,18 @@ driver.quit()
 current_directory = os.path.dirname(os.path.abspath(__file__))
 
 # CSV 파일로 저장
-csv_file = os.path.join(current_directory, "genesis_faq_data.csv")
-csv_columns = ["category", "question", "answer"]
+csv_file = os.path.join(current_directory, "faq_data.csv")
+csv_columns = ["category", "question", "answer", "is_most", "brand_id"]
+
+# 새로 저장할  csv 파일 경로
+file_exists = os.path.isfile(csv_file)
 
 try:
-    with open(csv_file, 'w', newline='', encoding='utf-8') as csvfile:
+    with open(csv_file, 'a', newline='', encoding='utf-8') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=csv_columns)
-        writer.writeheader()
+        # 새로 저장할 csv 파일 경로 존재하지 않으면, 생성
+        if not file_exists:
+            writer.writeheader()
         for data in faq_data:
             writer.writerow(data)
     print(f"Data successfully saved to {csv_file}")
