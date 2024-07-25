@@ -65,10 +65,12 @@ def load_brand_models(brand):
 
 
 def main():
+    conn = st.connection("mydb", type="sql", autocommit=True)
+
     if "brand" not in st.session_state:
         st.session_state["brand"] = ""
-    elif "region" not in st.session_state:
-        st.session_state["region"] = ""
+    # elif "region" not in st.session_state:
+    #     st.session_state["region"] = ""
     elif "model" not in st.session_state:
         st.session_state["model"] = ""
     elif "start_date" not in st.session_state:
@@ -104,7 +106,7 @@ def main():
     models_for_brand = load_brand_models(brand)
     model = st.selectbox("모델", models_for_brand, index=None, placeholder="모델명")
 
-    region = st.selectbox("지역", data["region"])
+    # region = st.selectbox("지역", data["region"])
 
     start_date, end_date = st.select_slider(
         "날짜 범위 설정",
@@ -118,10 +120,10 @@ def main():
     )
     if brand:
         st.session_state["brand"] = brand
-    if region:
-        st.session_state["region"] = model
     if model:
-        st.session_state["model"] = region
+        st.session_state["region"] = model
+    # if region:
+    #     st.session_state["model"] = region
     if start_date:
         st.session_state["start_date"] = start_date
     if end_date:
@@ -134,28 +136,28 @@ def main():
         start_year, start_month = map(int, start_date.split("."))
         end_year, end_month = map(int, end_date.split("."))
 
-        # 날짜 범위에 맞는 월 단위 날짜 생성
-        date_range = (
-            pd.date_range(
-                start=pd.Timestamp(year=start_year, month=start_month, day=1),
-                end=pd.Timestamp(year=end_year, month=end_month, day=1),
-                freq="MS",
-            )
-            .strftime("%Y.%m")
-            .tolist()
-        )
-        vehicle_counts = np.random.randint(1, 100, len(date_range))  # 예제 데이터
+        getting_car_cnt = f"""
+            SELECT 
+                CONCAT(year, '.', LPAD(month, 2, '0')) AS date,
+                SUM(car_cnt) AS car_cnt
+            FROM 
+                model
+            INNER JOIN brand
+            ON model.brand_id = brand.brand_id
+            WHERE 
+                brand_name = '{brand}'
+                AND model_name LIKE '{model}'
+                AND (year > {start_year} OR (year = {start_year} AND month >= {start_month}))
+                AND (year < {end_year} OR (year = {end_year} AND month <= {end_month}))
+            GROUP BY 
+                year, month
+            ORDER BY 
+                year, month;
+        """
+        car = conn.query(getting_car_cnt, ttl=5000)
 
-        data = pd.DataFrame({"날짜": date_range, "차량 수": vehicle_counts})
-        # DataFrame 생성
-        df = pd.DataFrame(data)
-
-        # Streamlit으로 선 차트 생성
-        st.subheader("지역 빈도수 선 차트")
-        st.line_chart(data.set_index("날짜"))
-
-
-# submit_button = st.form_submit_button(label="검색")
+        container.subheader(f"{brand} {model}차량 등록 현황 차트")
+        container.table(car)
 
 
 if __name__ == "__main__":
