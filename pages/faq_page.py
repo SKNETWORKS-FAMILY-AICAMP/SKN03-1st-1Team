@@ -1,4 +1,3 @@
-import pandas as pd
 import streamlit as st
 
 
@@ -47,7 +46,7 @@ def main():
 
         questions = faq["question"].tolist()
         answers = faq["answer"].tolist()
-        container = st.container()
+        container = st.container(border=True)
         for question, answer in zip(questions, answers):
             container = st.container()
             container.write(f"Q. {question}")
