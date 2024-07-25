@@ -96,6 +96,11 @@ main branch를 제외한 모든 branch는 feature branch로 생성하여 작업 
 3. 작업이 완료되면 main branch로 pull request 생성
 4. 코드 리뷰 후 main branch에 merge
 
+## 오류 해결 과정
+![크롤링 오류](https://github.com/user-attachments/assets/eb8a99b2-238e-4e8f-a5a7-9935a74588f2)
+- 특정 기간에 등록된 신규 차량이 없을 경우 위와 같은 팝업창이 뜸
+  - 뒤로 가기를 눌러 해결하였고, 데이터 값은 0으로 처리
+  
 ## 기술 스택
 
 ### 언어
