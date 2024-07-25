@@ -2,6 +2,7 @@
 import streamlit as st
 from datetime import datetime
 import pandas as pd
+import matplotlib.pyplot as plt
 
 st.markdown(("국내 차량 브랜드"))
 st.header("차량 등록 현황")
@@ -9,97 +10,116 @@ st.header("차량 등록 현황")
 # st.page_link("./tests/pages/streamlit_test.py", label="Page 1", icon="1️⃣")
 
 
-# 임시 데이터 생성
-def create_temp_data():
+# 브랜드에 따른 모델 목록
+def load_brand_models(brand):
+    if brand == "기아":
+        return [
+            "쏘렌토",
+            "카니발",
+            "스포티지",
+            "셀토스",
+            "레이",
+            "K8",
+            "K5",
+            "모닝",
+            "니로",
+            "EV6",
+            "K3",
+            "EV9",
+            "모하비",
+            "K9",
+            "스팅어",
+        ]
+    elif brand == "현대":
+        return [
+            "그랜저",
+            "아반떼",
+            "싼타페",
+            "투싼",
+            "캐스퍼",
+            "쏘나타",
+            "팰리세이드",
+            "코나",
+            "아이오닉 5",
+            "아이오닉 6",
+            "베뉴",
+            "넥쏘",
+        ]
+    elif brand == "제네시스":
+        return ["G80", "GV80", "GV70", "G90", "G70", "GV60"]
+    elif brand == "KGM":
+        return ["토레스", "렉스턴 스포츠", "티볼리", "렉스턴", "코란도"]
+    elif brand == "쉐보래":
+        return [
+            "트랙스",
+            "트레일블레이저",
+            "콜로라도",
+            "트래버스",
+            "볼트 EUV",
+            "스파크",
+            "이쿼녹스",
+            "타호",
+            "볼트 EV",
+            "말리부",
+        ]
+    elif brand == "르노코리아":
+        return ["QM6", "XM3", "SM6", "아르카나"]
+    return []
+
+
+def main():
+    if "brand" not in st.session_state:
+        st.session_state["brand"] = ""
+    elif "region" not in st.session_state:
+        st.session_state["region"] = ""
+    elif "model" not in st.session_state:
+        st.session_state["model"] = ""
+    elif "start_date" not in st.session_state:
+        st.session_state["start_date"] = ""
+    elif "end_date" not in st.session_state:
+        st.session_state["end_date"] = ""
     data = {
-        "brand": ["Toyota", "Hyundai", "Kia", "Toyota", "Hyundai", "Kia"],
-        "model": ["Camry", "Sonata", "Optima", "Corolla", "Elantra", "Sportage"],
-        "region": ["Seoul", "Busan", "Seoul", "Incheon", "Busan", "Incheon"],
-        "date": [
-            "2023-01-01",
-            "2023-01-02",
-            "2023-01-03",
-            "2023-01-04",
-            "2023-01-05",
-            "2023-01-06",
-        ],
-        "registration_count": [100, 150, 200, 250, 300, 350],
+        "brand": ["기아", "현대", "제네시스", "KGM", "쉐보래", "르노코리아"],
+        "region": ["Seoul", "Busan", "Incheon"],
     }
-    df = pd.DataFrame(data)
-    df["date"] = pd.to_datetime(df["date"])
-    return df
 
+    brand = st.selectbox("브랜드", data["brand"], index=0, placeholder="브랜드명")
 
-# 데이터 불러오기
-@st.cache_data
-def load_data():
-    return create_temp_data()
+    # 브랜드 선택 시 모델 선택박스 업데이트
+    models_for_brand = load_brand_models(brand)
+    model = st.selectbox("모델", models_for_brand, index=None, placeholder="모델명")
 
-
-data = load_data()
-
-
-with st.form(key="my_form"):
-    # selcetbox
-    brand = st.selectbox("브랜드", data["brand"].unique())
-    model = st.selectbox("모델명", data["model"].unique())
-    region = st.selectbox("지역", data["region"].unique())
+    region = st.selectbox("지역", data["region"])
 
     start_date, end_date = st.select_slider(
         "날짜 범위 설정",
         options=[
-            "2023.01",
-            "2023.02",
-            "2023.03",
-            "2023.04",
-            "2023.05",
-            "2023.06",
-            "2023.07",
-            "2023.08",
-            "2023.09",
-            "2023.10",
-            "2023.11",
-            "2023.12",
-            "2024.01",
-            "2024.02",
-            "2024.03",
-            "2024.04",
-            "2024.05",
-            "2024.06",
+            f"{year}.{str(month).zfill(2)}"
+            for year in range(2023, 2025)
+            for month in range(1, 13)
+            if not (year == 2024 and month > 6)
         ],
-        value=("2023.01", "2023.02"),
+        value=("2023.06", "2024.01"),
     )
-    submit_button = (st.form_submit_button(label="검색"),)
 
-    st.title("차량 등록현황 검색")
-    if filtered_data.empty:
-        st.write("해당 조건에 맞는 데이터가 없습니다.")
-    else:
-        st.write("검색 결과:", filtered_data.shape[0], "건")
-        st.dataframe(filtered_data)
+    if brand:
+        st.session_state["brand"] = brand
+    if region:
+        st.session_state["region"] = model
+    if model:
+        st.session_state["model"] = region
+    if start_date:
+        st.session_state["start_date"] = start_date
+    if end_date:
+        st.session_state["end_date"] = end_date
 
-    # if submit_button:
-    #     sql = """
-    #         select
+    submit_button = st.button(label="Submit")
+    if submit_button:
+        container = st.container(border)
 
-    #     """
-    # st.write(
-    #     f"브랜드: {brand}, 모델: {model}, 지역: {region}, 기간: {start_date}~{end_date}"
-    # )
-# sql문에서 where절에 값이 들어간다.
 
-# col1, col2, col3 = st.columns(3)
-# with col1:
-#     st.metric(label="해당 기간 총 등록 수", value="111330")  # , delta="2.21%")
-# with col2:
-#     st.metric(label="해당 기간 총 등록 수", value="320대", delta="-100대")
-# with col3:
-#     st.metric(label="해당 기간 최소 증가율", value="500대", delta="200대")
+# submit_button = st.form_submit_button(label="검색")
 
-# df = pd.DataFrame({"first column": [1, 2, 3, 4], "second column": [10, 20, 30, 40]})
-# # st.rine(df)
-# st.line_chart(df)
 
-# page_link = st.page_link("./pages/test.py", label="Page 1", icon="1️⃣")
-
-# 차량 등록 현황 페이지에서 다른 페이지로 넘어가면서 값을 전송하는 방법..?
+if __name__ == "__main__":
+    main()
