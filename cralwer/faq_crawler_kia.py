@@ -27,7 +27,7 @@ def collect_faq_data(faq_data: list):
             question.click()
 
         answer = driver.find_element(By.XPATH, f"/html/body/div[2]/div/div/div[2]/div/div/div[3]/div/div/div[3]/div/div/div[{question_num}]/div/div/div")
-        faq_data.append({"category": category.text, "question": question.text, "answer": answer.text, "is_most": None, "brand_id": 0})
+        faq_data.append({"category": category.text, "question": question.text, "answer": answer.text, "is_most": None, "brand_id": 1})
 
 faq_data = []
 for category_num in range(1, 8):
