@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from car_data_extractor import CarDataExtractor
 import time
 
@@ -34,3 +35,5 @@ for combination in filter_combinations[start_index:]:
     if combination_tuple not in processed_combinations:
         car_extractor.select_filter_and_extract_data(combination)
         processed_combinations.add(combination_tuple)
+=======
+>>>>>>> main
