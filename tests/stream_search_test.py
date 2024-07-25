@@ -1,14 +1,15 @@
 # 차량등록현황
-import streamlit as st
+
 from datetime import datetime
+
 import pandas as pd
 import matplotlib.pyplot as plt
+import streamlit as st
 
 st.markdown(("국내 차량 브랜드"))
 st.header("차량 등록 현황")
 
 # st.page_link("./tests/pages/streamlit_test.py", label="Page 1", icon="1️⃣")
-
 
 # 브랜드에 따른 모델 목록
 def load_brand_models(brand):
@@ -91,7 +92,7 @@ def main():
 
     region = st.selectbox("지역", data["region"])
 
-    start_date, end_date = st.select_slider(
+    start_date, end_date = container.select_slider(
         "날짜 범위 설정",
         options=[
             f"{year}.{str(month).zfill(2)}"
@@ -101,7 +102,6 @@ def main():
         ],
         value=("2023.06", "2024.01"),
     )
-
     if brand:
         st.session_state["brand"] = brand
     if region:

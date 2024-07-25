@@ -1,4 +1,3 @@
-import pandas as pd
 import streamlit as st
 
 
@@ -8,7 +7,7 @@ def main():
     st.markdown("**국내 차량 브랜드**")
     st.markdown("### 통합 FAQ 페이지")
 
-    brand_name = ["기아", "제네시스"]
+    brand_name = ["기아", "제네시스", "현대"]
 
     with st.form(key="my_form"):
 
@@ -30,28 +29,35 @@ def main():
             submit_button = st.form_submit_button(label="검색")
 
         if submit_button:
-            getting_faq = f"""
-            SELECT question, answer
+            getting_question = f"""
+            SELECT answer
             FROM faq
             INNER JOIN brand
             ON faq.brand_id = brand.brand_id
             WHERE 1=1
-                  AND brand_name LIKE '%{brand_option}%'
-                  AND question LIKE '%{search}%'
+                  AND brand_name LIKE '%제네시스%'
+                  AND question LIKE '%법%'
                   ;
             """
-            faq = conn.query(getting_faq, ttl=5000)
+            question = conn.query(question, ttl=3600)
+
+            getting_answer = f"""
+            SELECT answer
+            FROM faq
+            INNER JOIN brand
+            ON faq.brand_id = brand.brand_id
+            WHERE 1=1
+                  AND brand_name LIKE '%제네시스%'
+                  AND question LIKE '%법%'
+                  ;
+            """
+            answer = conn.query(question, ttl=3600)
 
     if brand_option is not None:
         st.subheader(f"{brand_option} 답변")
-
-        questions = faq["question"].tolist()
-        answers = faq["answer"].tolist()
-        container = st.container()
-        for question, answer in zip(questions, answers):
-            container = st.container()
-            container.write(f"Q. {question}")
-            container.write(f"A. {answer}")
+        container = st.container(border=True)
+        container.text(f"Q. {question}")
+        container.text(f"A. {answer}")
 
 
 if __name__ == "__main__":
