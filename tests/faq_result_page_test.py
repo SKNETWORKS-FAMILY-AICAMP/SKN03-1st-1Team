@@ -30,28 +30,19 @@ def main():
 
         if submit_button:
             getting_question = f"""
-            SELECT answer
-            FROM faq
+            SELECT car_cnt
+            FROM model
             INNER JOIN brand
             ON faq.brand_id = brand.brand_id
             WHERE 1=1
                   AND brand_name LIKE '%제네시스%'
-                  AND question LIKE '%법%'
+                  AND brand_name LIKE '%제네시스%'
+                  AND brand_name LIKE '%제네시스%'
+                  AND brand_name LIKE '%제네시스%'
+                  AND brand_name LIKE '%제네시스%'
                   ;
             """
             question = conn.query(question, ttl=3600)
-
-            getting_answer = f"""
-            SELECT answer
-            FROM faq
-            INNER JOIN brand
-            ON faq.brand_id = brand.brand_id
-            WHERE 1=1
-                  AND brand_name LIKE '%제네시스%'
-                  AND question LIKE '%법%'
-                  ;
-            """
-            answer = conn.query(question, ttl=3600)
 
     if brand_option is not None:
         st.subheader(f"{brand_option} 답변")
