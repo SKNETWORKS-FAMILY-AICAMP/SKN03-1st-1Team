@@ -26,7 +26,7 @@ filter_combinations = CarDataExtractor.generate_combinations(filters, periods)
 filter_combinations.sort()
 #print(len(filter_combinations))
 
-start_index = 292
+start_index = 325
 
 processed_combinations = set()
 for combination in filter_combinations[start_index:]:
