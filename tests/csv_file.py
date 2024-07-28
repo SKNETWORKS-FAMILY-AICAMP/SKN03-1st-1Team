@@ -1,11 +1,12 @@
 import os
 import pandas as pd
 
-# 폴더 경로 및 제외할 파일 경로 지정
+# 폴더 경로 및 파일 경로 지정
 folder_path = '/Users/seungminoh/SKN03-1st-1Team/data'
 exclude_file_path = os.path.join(folder_path, 'faq_data.csv')
 brand_output_path = os.path.join(folder_path, 'brand.csv')
 model_output_path = os.path.join(folder_path, 'model.csv')
+cleaned_file_path = os.path.join(folder_path, 'cleaned_model.csv')
 
 # 폴더 안의 모든 CSV 파일 읽기
 all_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
@@ -19,7 +20,7 @@ combined_df = pd.DataFrame()
 # 각 파일을 읽어서 병합
 for file in all_files:
     file_path = os.path.join(folder_path, file)
-    df = pd.read_csv(file_path)
+    df = pd.read_csv(file_path, on_bad_lines='skip')
     combined_df = pd.concat([combined_df, df], ignore_index=True)
 
 # EXTRACT_DE가 비어있는 경우 0으로 대체
@@ -65,8 +66,21 @@ model_df['model_id'] = model_df.index + 1
 # 필요한 컬럼 선택
 model_df = model_df[['model_id', 'model_name', 'year', 'month', 'car_cnt', 'brand_id']]
 
+# NaN이 있는 행 제거
+model_df_cleaned = model_df.dropna()
+
+# model_id 행 제거
+model_df_cleaned = model_df_cleaned.drop(columns=['model_id'])
+
+# year, month, car_cnt, brand_id를 정수형으로 변환
+model_df_cleaned['year'] = model_df_cleaned['year'].astype(int)
+model_df_cleaned['month'] = model_df_cleaned['month'].astype(int)
+model_df_cleaned['car_cnt'] = model_df_cleaned['car_cnt'].astype(int)
+model_df_cleaned['brand_id'] = model_df_cleaned['brand_id'].astype(int)
+
 # CSV 파일 저장
 brand_df.to_csv(brand_output_path, index=False)
 model_df.to_csv(model_output_path, index=False)
+model_df_cleaned.to_csv(cleaned_file_path, index=False)
 
-print(f"CSV files have been created:\n{brand_output_path}\n{model_output_path}")
+print(f"CSV files have been created:\n{brand_output_path}\n{model_output_path}\nCleaned CSV file has been saved to {cleaned_file_path}")
