@@ -35,9 +35,9 @@ def main():
             INNER JOIN brand
             ON faq.brand_id = brand.brand_id
             WHERE 1=1
-                  AND brand_name LIKE '%{brand_option}%'
-                  AND question LIKE '%{search}%'
-                  ;
+                AND brand_name LIKE '%{brand_option}%'
+                AND question LIKE '%{search}%'
+                ;
             """
             faq = conn.query(getting_faq, ttl=5000)
 
@@ -51,7 +51,7 @@ def main():
             container = st.container()
             container.write(f"Q. {question}")
             container.write(f"A. {answer}")
-
+    
 
 if __name__ == "__main__":
     main()

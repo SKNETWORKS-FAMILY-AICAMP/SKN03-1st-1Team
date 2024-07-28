@@ -1,15 +1,11 @@
 # 차량등록현황
-
-from datetime import datetime
-
-import pandas as pd
-import matplotlib.pyplot as plt
 import streamlit as st
 
 st.markdown(("국내 차량 브랜드"))
 st.header("차량 등록 현황")
 
 # st.page_link("./tests/pages/streamlit_test.py", label="Page 1", icon="1️⃣")
+
 
 # 브랜드에 따른 모델 목록
 def load_brand_models(brand):
@@ -116,6 +112,9 @@ def main():
     submit_button = st.button(label="Submit")
     if submit_button:
         container = st.container(border)
+        chart_data = pd.DataFrame(np.random.randn(20, 3), columns=["a", "b", "c"])
+        st.dataframe(chart_data[:2])
+        st.line_chart(chart_data)
 
 
 # submit_button = st.form_submit_button(label="검색")

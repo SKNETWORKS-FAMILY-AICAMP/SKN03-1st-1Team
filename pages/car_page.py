@@ -1,7 +1,6 @@
-# 차량등록현황
-import numpy as np
 import pandas as pd
 import streamlit as st
+import numpy as np
 
 st.markdown(("국내 차량 브랜드"))
 st.header("차량 등록 현황")
@@ -155,9 +154,12 @@ def main():
                 year, month;
         """
         car = conn.query(getting_car_cnt, ttl=5000)
-
         container.subheader(f"{brand} {model}차량 등록 현황 차트")
-        container.table(car)
+
+        # 데이터프레임 생성
+
+        df1 = car.set_index("date")
+        container.line_chart(df1)
 
 
 if __name__ == "__main__":
