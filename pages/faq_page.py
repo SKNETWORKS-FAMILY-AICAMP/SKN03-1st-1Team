@@ -49,9 +49,9 @@ def main():
         container = st.container(border=True)
         for question, answer in zip(questions, answers):
             container = st.container()
-            container.write(f"Q. {question}")
-            container.write(f"A. {answer}")
-    
+            container.markdown(f"### Q. {question}")
+            container.text(f"A. {answer}")
+
 
 if __name__ == "__main__":
     main()
