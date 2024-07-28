@@ -32,7 +32,7 @@ class CarDataExtractor:
             if not brand_value.strip():
                 continue
             self.driver.execute_script(f"arguments[0].value = '{brand_value}'; arguments[0].dispatchEvent(new Event('change'))", brand_select._el)
-            time.sleep(1)
+            time.sleep(2)
             model_select = Select(self.driver.find_element(By.ID, 'modelList'))
             models = [option.get_attribute("value") for option in model_select.options if option.get_attribute("value")]
             brand_model_map[brand_value] = models
@@ -183,7 +183,7 @@ class CarDataExtractor:
                     time.sleep(1)
                     print(f"Selected model: {model}")
 
-                    if subcategory_name == "기간별":
+                    if subcategory_name in ["기간별", "지역별"]:
                         self.select_date(*period.split('.'), 'from')
                         self.select_date(*period.split('.'), 'to')
 
