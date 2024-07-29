@@ -5,13 +5,16 @@ class DatabaseConnection:
     def __init__(self, connection):
         self.conn = connection
 
-    def query(self, query, ttl):
-        return self.conn.query(query, ttl=ttl)
+    def query(self, query, ttl=None):
+        if ttl:
+            return self.conn.query(query, ttl=ttl)
+        else:
+            return self.conn.query(query)
 
 
-class CarData(DatabaseConnection):
-    def __init__(self, connection):
-        super().__init__(connection)
+class CarData:
+    def __init__(self, db_conn):
+        self.db_conn = db_conn
 
     def load_brand_name(self):
         query = """
@@ -26,7 +29,7 @@ class CarData(DatabaseConnection):
                     CASE WHEN ASCII(SUBSTRING(brand_name,1)) < 123 THEN 2 ELSE 1 END
                 ), brand_name;    
         """
-        result = self.query(query, ttl=5000)
+        result = self.db_conn.query(query, ttl=5000)
         return result["brand_name"].tolist()
 
     def load_brand_models(self, brand):
@@ -44,7 +47,7 @@ class CarData(DatabaseConnection):
                     CASE WHEN ASCII(SUBSTRING(model_name,1)) < 123 THEN 2 ELSE 1 END
                 ), model_name;
         """
-        result = self.query(query, ttl=5000)
+        result = self.db_conn.query(query, ttl=5000)
         return result["model_name"].tolist()
 
     def load_region(self):
@@ -56,7 +59,7 @@ class CarData(DatabaseConnection):
             ORDER BY 
                 region;
         """
-        result = self.query(query, ttl=5000)
+        result = self.db_conn.query(query, ttl=5000)
         return result["region"].tolist()
 
     def get_car_count(
@@ -65,7 +68,6 @@ class CarData(DatabaseConnection):
         query = f"""
             SELECT 
                 CONCAT(year, '.', LPAD(month, 2, '0')) AS '날짜',
-                region AS '지역',
                 SUM(car_cnt) AS '차량 등록 수'
             FROM 
                 model
@@ -82,26 +84,30 @@ class CarData(DatabaseConnection):
             ORDER BY 
                 year, month;
         """
-        return self.query(query, ttl=5000)
+        return self.db_conn.query(query, ttl=5000)
 
 
-class CarApp(CarData):
+class CarApp:
     def __init__(self):
         connection = st.connection("mydb", type="sql", autocommit=True)
-        super().__init__(connection)
+        self.db_conn = DatabaseConnection(connection)
+        self.car_data = CarData(self.db_conn)
 
     def run(self):
         self.setup_session_state()
-        st.markdown(("국내 차량 브랜드"))
+        st.markdown("국내 차량 브랜드")
         st.header("차량 등록 현황")
 
         brand = st.selectbox(
-            "브랜드", self.load_brand_name(), index=0, placeholder="브랜드명"
+            "브랜드", self.car_data.load_brand_name(), index=0, placeholder="브랜드명"
         )
         model = st.selectbox(
-            "모델", self.load_brand_models(brand), index=None, placeholder="모델명"
+            "모델",
+            self.car_data.load_brand_models(brand),
+            index=None,
+            placeholder="모델명",
         )
-        region = st.selectbox("지역", self.load_region())
+        region = st.selectbox("지역", self.car_data.load_region())
         start_date, end_date = st.select_slider(
             "날짜 범위 설정",
             options=[
@@ -142,7 +148,7 @@ class CarApp(CarData):
         container = st.container()
         start_year, start_month = map(int, start_date.split("."))
         end_year, end_month = map(int, end_date.split("."))
-        car_data = self.get_car_count(
+        car_data = self.car_data.get_car_count(
             brand, region, model, start_year, start_month, end_year, end_month
         )
 
