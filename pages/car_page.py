@@ -9,9 +9,9 @@ class DatabaseConnection:
         return self.conn.query(query, ttl=ttl)
 
 
-class CarData:
-    def __init__(self, db_conn):
-        self.db_conn = db_conn
+class CarData(DatabaseConnection):
+    def __init__(self, connection):
+        super().__init__(connection)
 
     def load_brand_name(self):
         query = """
@@ -26,7 +26,7 @@ class CarData:
                     CASE WHEN ASCII(SUBSTRING(brand_name,1)) < 123 THEN 2 ELSE 1 END
                 ), brand_name;    
         """
-        result = self.db_conn.query(query, ttl=5000)
+        result = self.query(query, ttl=5000)
         return result["brand_name"].tolist()
 
     def load_brand_models(self, brand):
@@ -44,7 +44,7 @@ class CarData:
                     CASE WHEN ASCII(SUBSTRING(model_name,1)) < 123 THEN 2 ELSE 1 END
                 ), model_name;
         """
-        result = self.db_conn.query(query, ttl=5000)
+        result = self.query(query, ttl=5000)
         return result["model_name"].tolist()
 
     def load_region(self):
@@ -56,7 +56,7 @@ class CarData:
             ORDER BY 
                 region;
         """
-        result = self.db_conn.query(query, ttl=5000)
+        result = self.query(query, ttl=5000)
         return result["region"].tolist()
 
     def get_car_count(
@@ -82,15 +82,13 @@ class CarData:
             ORDER BY 
                 year, month;
         """
-        return self.db_conn.query(query, ttl=5000)
+        return self.query(query, ttl=5000)
 
 
-class CarApp:
+class CarApp(CarData):
     def __init__(self):
-        self.conn = DatabaseConnection(
-            st.connection("mydb", type="sql", autocommit=True)
-        )
-        self.car_data = CarData(self.conn)
+        connection = st.connection("mydb", type="sql", autocommit=True)
+        super().__init__(connection)
 
     def run(self):
         self.setup_session_state()
@@ -98,15 +96,12 @@ class CarApp:
         st.header("차량 등록 현황")
 
         brand = st.selectbox(
-            "브랜드", self.car_data.load_brand_name(), index=0, placeholder="브랜드명"
+            "브랜드", self.load_brand_name(), index=0, placeholder="브랜드명"
         )
         model = st.selectbox(
-            "모델",
-            self.car_data.load_brand_models(brand),
-            index=None,
-            placeholder="모델명",
+            "모델", self.load_brand_models(brand), index=None, placeholder="모델명"
         )
-        region = st.selectbox("지역", self.car_data.load_region())
+        region = st.selectbox("지역", self.load_region())
         start_date, end_date = st.select_slider(
             "날짜 범위 설정",
             options=[
@@ -147,7 +142,7 @@ class CarApp:
         container = st.container()
         start_year, start_month = map(int, start_date.split("."))
         end_year, end_month = map(int, end_date.split("."))
-        car_data = self.car_data.get_car_count(
+        car_data = self.get_car_count(
             brand, region, model, start_year, start_month, end_year, end_month
         )
 
