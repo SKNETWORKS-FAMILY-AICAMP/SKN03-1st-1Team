@@ -35,12 +35,12 @@ def main():
             INNER JOIN brand
             ON faq.brand_id = brand.brand_id
             WHERE 1=1
-                  AND brand_name LIKE '%제네시스%'
-                  AND brand_name LIKE '%제네시스%'
-                  AND brand_name LIKE '%제네시스%'
-                  AND brand_name LIKE '%제네시스%'
-                  AND brand_name LIKE '%제네시스%'
-                  ;
+                AND brand_name LIKE '%제네시스%'
+                AND brand_name LIKE '%제네시스%'
+                AND brand_name LIKE '%제네시스%'
+                AND brand_name LIKE '%제네시스%'
+                AND brand_name LIKE '%제네시스%'
+            ;
             """
             question = conn.query(question, ttl=3600)
 
