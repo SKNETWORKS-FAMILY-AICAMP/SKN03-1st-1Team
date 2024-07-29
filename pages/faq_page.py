@@ -1,35 +1,54 @@
 import streamlit as st
 
 
-def main():
-    conn = st.connection("mydb", type="sql", autocommit=True)
+class DatabaseConnection:
+    def __init__(self, connection):
+        self.conn = connection
 
-    st.markdown("**국내 차량 브랜드**")
-    st.markdown("### 통합 FAQ 페이지")
+    def query(self, query, ttl=None):
+        if ttl:
+            return self.conn.query(
+                query, ttl=ttl
+            )  # Assuming the connection object supports ttl
+        else:
+            return self.conn.query(query)
 
-    brand_name = ["기아", "제네시스"]
 
-    with st.form(key="my_form"):
+class FAQApp:
+    def __init__(self):
+        self.conn = DatabaseConnection(
+            st.connection("mydb", type="sql", autocommit=True)
+        )
+        self.brand_name = ["기아", "제네시스"]
 
-        left, middle, right = st.columns([2, 4, 1])
-        with left:
-            brand_option = st.selectbox(
-                "",
-                brand_name,
-                index=None,
-                label_visibility="collapsed",
-                placeholder="브랜드명",
-            )
+    def run(self):
+        st.markdown("**국내 차량 브랜드**")
+        st.markdown("### 통합 FAQ 페이지")
 
-        with middle:
-            search = st.text_input(
-                "", placeholder="질문을 검색하세요", label_visibility="collapsed"
-            )
-        with right:
-            submit_button = st.form_submit_button(label="검색")
+        with st.form(key="my_form"):
+            left, middle, right = st.columns([2, 4, 1])
+            with left:
+                brand_option = st.selectbox(
+                    "",
+                    self.brand_name,
+                    index=None,
+                    label_visibility="collapsed",
+                    placeholder="브랜드명",
+                )
 
-        if submit_button:
-            getting_faq = f"""
+            with middle:
+                search = st.text_input(
+                    "", placeholder="질문을 검색하세요", label_visibility="collapsed"
+                )
+            with right:
+                submit_button = st.form_submit_button(label="검색")
+
+            if submit_button:
+                faq = self.get_faq(brand_option, search)
+                self.display_faq(brand_option, faq)
+
+    def get_faq(self, brand_option, search):
+        query = f"""
             SELECT question, answer
             FROM faq
             INNER JOIN brand
@@ -37,21 +56,26 @@ def main():
             WHERE 1=1
                 AND brand_name LIKE '%{brand_option}%'
                 AND question LIKE '%{search}%'
-                ;
-            """
-            faq = conn.query(getting_faq, ttl=5000)
+            GROUP BY 
+                question, answer
+            ORDER BY 
+                question
+            ;
+        """
+        return self.conn.query(query, ttl=5000)
 
-    if brand_option is not None:
-        st.subheader(f"{brand_option} 답변")
+    def display_faq(self, brand_option, faq):
+        if brand_option is not None:
+            st.subheader(f"{brand_option} 답변")
 
-        questions = faq["question"].tolist()
-        answers = faq["answer"].tolist()
-        container = st.container(border=True)
-        for question, answer in zip(questions, answers):
-            container = st.container()
-            container.markdown(f"### Q. {question}")
-            container.text(f"A. {answer}")
+            questions = faq["question"].tolist()
+            answers = faq["answer"].tolist()
+            for question, answer in zip(questions, answers):
+                container = st.container()
+                container.markdown(f"### Q. {question}")
+                container.text(f"A. {answer}")
 
 
 if __name__ == "__main__":
-    main()
+    app = FAQApp()
+    app.run()
