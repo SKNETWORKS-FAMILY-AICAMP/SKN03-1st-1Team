@@ -107,7 +107,21 @@ main branch를 제외한 모든 branch는 feature branch로 생성하여 작업 
 ## 오류 해결 과정
 ![크롤링 오류](https://github.com/user-attachments/assets/eb8a99b2-238e-4e8f-a5a7-9935a74588f2)
 - 특정 기간에 등록된 신규 차량이 없을 경우 위와 같은 팝업창이 뜸
-  - 뒤로 가기를 눌러 해결하였고, 데이터 값은 0으로 처리
+  - 뒤로 가기를 눌러 해결하였고, 데이터 값은 0으로 처리   
+
+- 브라우저 꺼짐 현상
+   - Time.sleep() 혹은 .implicitly_wait()로 잡아 둠. 이후 기능 추가되면 꺼짐 현상이 사라지기도 함.
+   - 혹은 브라우저 꺼짐 방지 코드 추가하기도 함
+
+- 화면에 대상이 보이지 않으면 에러 발생
+   - execute_script() 통해 스크롤 조정하여 해결
+   - 
+- 크롤링 데이터를 csv 파일로 저장할 때, 현재 경로와 달라 에러 발생
+   - os.path.join(os.path.dirname(os.path.abspath(__file__)), '파일명.csv') 통해 해결
+     
+- DB에 저장하여 조회한 결과, answer 내용이 비어있는 부분 발견
+  - 해당 데이터 삭제
+
   
 ## 기술 스택
 
