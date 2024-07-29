@@ -5,8 +5,11 @@ class DatabaseConnection:
     def __init__(self, connection):
         self.conn = connection
 
-    def query(self, query, ttl):
-        return self.conn.query(query, ttl=ttl)
+    def query(self, query, ttl=None):
+        if ttl:
+            return self.conn.query(query, ttl=ttl)
+        else:
+            return self.conn.query(query)
 
 
 class CarData:
@@ -65,7 +68,6 @@ class CarData:
         query = f"""
             SELECT 
                 CONCAT(year, '.', LPAD(month, 2, '0')) AS '날짜',
-                region AS '지역',
                 SUM(car_cnt) AS '차량 등록 수'
             FROM 
                 model
@@ -87,14 +89,13 @@ class CarData:
 
 class CarApp:
     def __init__(self):
-        self.conn = DatabaseConnection(
-            st.connection("mydb", type="sql", autocommit=True)
-        )
-        self.car_data = CarData(self.conn)
+        connection = st.connection("mydb", type="sql", autocommit=True)
+        self.db_conn = DatabaseConnection(connection)
+        self.car_data = CarData(self.db_conn)
 
     def run(self):
         self.setup_session_state()
-        st.markdown(("국내 차량 브랜드"))
+        st.markdown("국내 차량 브랜드")
         st.header("차량 등록 현황")
 
         brand = st.selectbox(

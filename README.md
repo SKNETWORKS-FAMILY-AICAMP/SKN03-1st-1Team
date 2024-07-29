@@ -39,8 +39,8 @@ SK Networks AI CAMP 3기
 
 ### 데이터 시각화
 
-- 
-- 
+- 국내 차량 등록 현황 차트 
+- 기아, 제네시스 FAQ 검색 결과 키워드 분석 텍스트
 
 ## Ⅲ. ER Diagram
 
@@ -60,7 +60,15 @@ SK Networks AI CAMP 3기
 
 ## 실제 동작 화면
 
-이미지 삽입 예정
+- 차량 검색 화면
+![동작화면](images/car_page_search.png)
+- 차량 검색 결과 화면
+![동작화면](images/car_page_result.png)
+
+- FAQ 검색 화면
+![동작화면](images/faq_page_search.png)
+- FAQ 검색 결과 화면
+![동작화면](images/faq_page_result.png)
 
 ## Ⅴ. 컨벤션 규칙
 
